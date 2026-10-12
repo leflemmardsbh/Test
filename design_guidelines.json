@@ -1,0 +1,52 @@
+{
+  "project_name": "MedGL - General Medicine PPL & Revision Platform",
+  "app_type": "hybrid_fullstack",
+  "theme": "light",
+  "design_archetype": "ORGANIC & EARTHY / SWISS & HIGH-CONTRAST",
+  "typography": {
+    "heading": "Plus Jakarta Sans, sans-serif",
+    "body": "Inter, sans-serif",
+    "mono": "JetBrains Mono, monospace"
+  },
+  "colors": {
+    "primary": "#0D5C75",
+    "primary_hover": "#09465a",
+    "accent": "#2EA44F",
+    "background": "#F8FAFC",
+    "surface": "#FFFFFF",
+    "card": "#FFFFFF",
+    "border": "#E2E8F0",
+    "text_main": "#0F172A",
+    "text_muted": "#64748B",
+    "forbidden_color": "#1B93A4"
+  },
+  "image_urls": [
+    {
+      "category": "hero_study",
+      "url": "https://images.unsplash.com/photo-1652787545245-5e39748cdf97?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2OTV8MHwxfHNlYXJjaHwzfHxtZWRpY2FsJTIwc3RldGhvc2NvcGUlMjB0ZXh0Ym9vayUyMGxpYnJhcnklMjBzdHVkeXxlbnwwfHx8fDE3OTE4Mjg5MDJ8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Medical book and stethoscope for revision platform"
+    },
+    {
+      "category": "doctor_notes",
+      "url": "https://images.unsplash.com/photo-1678940805259-e2be79fa33e4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NjV8MHwxfHNlYXJjaHwzfHxkb2N0b3IlMjBzdHVkeWluZyUyMHN0ZXRob3Njb3BlJTIwbm90ZWJvb2slMjBtZWRpY2FsJnt8MHx8fDE3OTE4Mjg5MDJ8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Doctor taking study notes"
+    }
+  ],
+  "key_functionalities": [
+    "Tableau de bord étudiant (Student dashboard with progress & modules)",
+    "Modules médicaux (Cardiologie, Pneumologie, Neurologie, Gastro-entérologie, etc.)",
+    "Cours détaillés & fiches de révision",
+    "Quiz interactifs avec scores et corrections",
+    "Progression globale et par spécialité",
+    "Tableau de bord administrateur (Protégé par code/login admin)",
+    "CRUD complet pour les modules, chapitres, textes, fiches, quiz, questions & réponses",
+    "Gestion des utilisateurs et statistiques de la plateforme",
+    "Personnalisation de l'ordre d'affichage"
+  ],
+  "instructions_to_main_agent": "Implement a full stack medical revision platform inspired by AeroGligli (for PPL) adapted for medical general practice (Medecine Generale). Include a fully functional student area with modules, lessons, revision sheets, interactive quizzes, and progress tracker. Include a protected Admin Panel (with login email & password / passcode) that allows full CRUD operations on modules, chapters, contents, quiz questions, answers, user management, stats, and display order customization.",
+  "universal_guidelines": [
+    "Every interactive and key informational element MUST include a data-testid attribute.",
+    "Do not use complete transparent background in header or overlays.",
+    "Use generous spacing, clear typography hierarchy, and professional medical color palette."
+  ]
+}
