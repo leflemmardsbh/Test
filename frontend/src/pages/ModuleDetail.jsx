@@ -3,6 +3,18 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { BookOpen, FileText, ClipboardList, ChevronLeft, ChevronRight } from "lucide-react";
 import api from "@/lib/api";
 import { getIcon } from "@/lib/icons";
+import { getQuizSummary } from "@/lib/stats";
+
+function QuizMeta({ it }) {
+  const s = getQuizSummary(it.id);
+  return (
+    <small data-testid={`quiz-meta-${it.id}`}>
+      {it.questions_count ?? 0} questions
+      {s && <> · <b className={`score-inline ${s.best >= 70 ? "good" : s.best >= 40 ? "mid" : "low"}`}>Meilleur {s.best}%</b></>}
+      {s?.pending > 0 && <> · <span className="score-inline pending">{s.pending} à réviser</span></>}
+    </small>
+  );
+}
 
 const TABS = [
   { key: "cours", label: "Cours", Icon: BookOpen, source: "courses", kind: "courses" },
@@ -82,7 +94,7 @@ export default function ModuleDetail() {
                 <span className="item-row-num">{String(idx + 1).padStart(2, "0")}</span>
                 <div>
                   <strong>{it.title}</strong>
-                  {tab === "qcm" && <small>{it.questions_count ?? 0} questions</small>}
+                  {tab === "qcm" && <QuizMeta it={it} />}
                   {tab !== "qcm" && it.order !== undefined && <small>Ordre #{it.order + 1}</small>}
                 </div>
               </div>

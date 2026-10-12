@@ -163,6 +163,56 @@ async def quiz_detail(quiz_id: str):
     return q
 
 
+def snippet(text: str, q: str, width: int = 140) -> str:
+    if not text:
+        return ""
+    low = text.lower()
+    pos = low.find(q.lower())
+    if pos < 0:
+        return text[:width] + ("…" if len(text) > width else "")
+    start = max(0, pos - width // 3)
+    end = min(len(text), pos + len(q) + width)
+    return ("…" if start > 0 else "") + text[start:end].replace("\n", " ") + ("…" if end < len(text) else "")
+
+
+@api.get("/search")
+async def search(q: str = ""):
+    q = q.strip()
+    if len(q) < 2:
+        return {"query": q, "modules": [], "courses": [], "sheets": [], "quizzes": []}
+    import re
+    rx = {"$regex": re.escape(q), "$options": "i"}
+    modules = await db.modules.find({}, {"_id": 0, "id": 1, "title": 1, "color": 1, "icon": 1}).to_list(500)
+    mod_map = {m["id"]: m for m in modules}
+
+    def with_module(doc):
+        m = mod_map.get(doc.get("module_id"), {})
+        doc["module_title"] = m.get("title", "")
+        doc["module_color"] = m.get("color", "teal")
+        return doc
+
+    mods = [m for m in await db.modules.find({"$or": [{"title": rx}, {"description": rx}]}, {"_id": 0}).to_list(50)]
+    courses = await db.courses.find({"$or": [{"title": rx}, {"content": rx}]}, {"_id": 0}).limit(50).to_list(50)
+    sheets = await db.sheets.find({"$or": [{"title": rx}, {"content": rx}]}, {"_id": 0}).limit(50).to_list(50)
+    quizzes = await db.quizzes.find(
+        {"$or": [{"title": rx}, {"description": rx}, {"questions.question": rx}, {"questions.choices": rx}, {"questions.explanation": rx}]},
+        {"_id": 0},
+    ).limit(50).to_list(50)
+
+    out_courses = [with_module({"id": c["id"], "module_id": c["module_id"], "title": c["title"], "snippet": snippet(c.get("content", ""), q)}) for c in courses]
+    out_sheets = [with_module({"id": s["id"], "module_id": s["module_id"], "title": s["title"], "snippet": snippet(s.get("content", ""), q)}) for s in sheets]
+    out_quizzes = []
+    for qz in quizzes:
+        matched = [qq["question"] for qq in qz.get("questions", []) if q.lower() in (qq.get("question", "") + " ".join(qq.get("choices", [])) + qq.get("explanation", "")).lower()]
+        out_quizzes.append(with_module({
+            "id": qz["id"], "module_id": qz["module_id"], "title": qz["title"],
+            "questions_count": len(qz.get("questions", [])),
+            "snippet": snippet(matched[0], q) if matched else snippet(qz.get("description", ""), q),
+            "matched_questions": len(matched),
+        }))
+    return {"query": q, "modules": mods, "courses": out_courses, "sheets": out_sheets, "quizzes": out_quizzes}
+
+
 # ---------- Admin auth ----------
 @api.post("/admin/verify")
 async def admin_verify(data: CodeInput):
