@@ -1,29 +1,41 @@
-# MedGL — Product Requirements
+# MedGL — Plateforme de révision médicale (type Aérogligli pour la médecine)
 
-## Original problem statement
-Tu vois aérogligli pour le PPL fait pareil pour les modules de médecines, fait en sorte que je puisse tout changer depuis un panneau admin accès avec un code
+## Problem statement (verbatim)
+> Tu vois aérogligli pour le PPL fait pareil pour les modules de médecines, fait en sorte que je puisse tout changer depuis un panneau admin accès avec un code
 
-## Architecture decisions
-- React frontend with responsive student and admin experiences.
-- FastAPI API with MongoDB collections for users, modules and progress.
-- JWT email/password access for the protected admin panel.
+## User choices (confirmed via ask_human)
+- Accès public sans compte étudiant.
+- Panneau admin protégé par un code alphanumérique court (par défaut `MEDGL-2026`).
+- Chaque module contient 3 blocs : Cours, Fiches de révision, QCM.
+- Admin gère tout : CRUD complet modules/cours/fiches/QCM, réordonnancement, changement du code.
+- Rebuild propre (nouveau design sobre médical, react-router).
+- Base de données vide au démarrage.
 
-## User personas
-- Étudiant en médecine générale qui révise par modules, cours, fiches, quiz et progression.
-- Responsable pédagogique qui administre les contenus, l’ordre des modules et les statistiques.
+## Architecture
+- Backend FastAPI + MongoDB. Collections : `settings`, `modules`, `courses`, `sheets`, `quizzes`.
+- Auth admin : JWT 24h via `POST /api/admin/verify`. Endpoints protégés sous `/api/admin/*`.
+- Endpoints publics : `GET /api/modules`, `/api/modules/{id}`, `/api/courses/{id}`, `/api/sheets/{id}`, `/api/quizzes/{id}`.
+- Frontend React + react-router-dom v7. Palette : #0D5C75 / #2EA44F / #F6F8FB. Polices : Plus Jakarta Sans + Inter + JetBrains Mono.
 
-## Core requirements
-- Dashboard, modules médicaux, progression et interface admin.
-- Admin CRUD modules with title, specialty, description, lesson/question counts and duration.
-- Admin login with email and password.
+## Implemented (jour 1)
+- Backend code-based admin, CRUD modules/cours/fiches/QCM, reorder, code rotation, cascading delete.
+- Frontend : Home, ModulesList, ModuleDetail (tabs Cours/Fiches/QCM), ContentView, QuizPlay interactif, AdminLogin, Admin panel (5 sections).
+- Éditeur de QCM intégré : questions illimitées, 2 à 6 choix, bonne réponse par radio, explication facultative.
+- Réordonnancement des modules par flèches ↑↓.
+- 15/15 tests backend passés + E2E frontend 100%.
 
-## Implemented — 2026-05-11
-- Seeded medical modules for cardiology, pneumology, neurology and gastro-enterology.
-- Student navigation, progress interactions, module search and visual progress dashboard.
-- Protected admin login, statistics, module creation, editing, deletion and ordering display.
+## Backlog
+### P1
+- Export QCM en PDF ou JSON.
+- Score persistant par QCM (localStorage) avec historique.
+- Mode révision : prioriser les questions ratées.
+- Recherche globale cours/fiches/QCM.
 
-## Prioritized backlog
-- P0: Add full lesson, revision-sheet and quiz question editors.
-- P1: Add student accounts, detailed quiz attempts and per-question corrections.
-- P1: Add drag-and-drop ordering and image upload for lessons.
-- P2: Add reminders, streaks and exportable progress reports.
+### P2
+- Drag & drop pour réordonner.
+- Impression/export fiches.
+- Thème sombre.
+- Statistiques admin anonymes (si stockage introduit).
+
+## Credentials
+Voir `/app/memory/test_credentials.md`. Code admin : `MEDGL-2026`.
