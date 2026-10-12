@@ -1,0 +1,42 @@
+{
+  "summary": "Iter3 testing: dark mode toggle + persistence, TipTap rich editor (courses & sheets) create/edit/public render, HTML preservation on existing course, DOMPurify XSS sanitation, plain-text fallback (<p>/<br>), 'Medbook' branding on nav/title/print header, backend search snippet strips HTML. All critical scenarios pass. Light regression (QCM admin filter) OK.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter3.py",
+    "/app/test_reports/pytest/iter3.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "RichEditor.jsx line 20: setContent is only applied when !editor.isFocused — fine for typical use, but if a parent updates `value` while the editor is focused, the editor stays stale. Low priority.",
+    "html.js toSafeHtml: isHtml regex is permissive; combined with DOMPurify this is safe. OK.",
+    "server.py snippet() strips HTML via regex (good enough for current data); for extremely large content it is O(n) — acceptable."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter3.py (new)"
+  ],
+  "success_rate": {"backend": "100% (4/4 pytest)", "frontend": "100% (theme, editor create/edit, sheets, XSS, plain-text, branding, print)"},
+  "test_credentials": "Admin code MEDGL-2026 — valid.",
+  "seed_data_creation": "All test data (TEST_rich_ui course, TEST_sheet_ui sheet, TEST_xss_ui, TEST_plain_ui, TEST_qcm_ui, TEST_print quiz) created during tests and cleaned up. A leftover TEST_rich_ui course (id a9b92f0b-54fb-4eb2-ae52-aff882c885ee) from an earlier run was also deleted via API. The persistent fixture course 50fc2003 remained unchanged.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "iter3 added TipTap rich editor + dark mode + Medbook rename. Rich editor testid pattern: `${kind}-content-editor-content` for contenteditable zone, `${kind}-content-editor-{bold,italic,underline,h2,h3,bullet,ordered,quote,hr,clear,undo,redo}` for toolbar buttons. Use mousedown-preventDefault pattern (buttons work via onMouseDown). After clicking the editable area, use page.keyboard.type. Theme toggle: data-testid='theme-toggle', storage key 'medbook_theme'. Admin selector `[data-testid^='admin-courses-']` matches the panel too — filter by '-' + uuid regex instead. Module Ue 5 id eeef84b2-146c-4c0c-91e7-226ae7a907b0 and course 50fc2003 are kept as fixtures.",
+  "verified_scenarios": [
+    "data-theme=light at first load (no prefs stored)",
+    "theme-toggle → html[data-theme=dark], localStorage medbook_theme=dark, persists across reload, toggles back to light",
+    "Home / modules / stats / recherche / module detail rendered coherently in dark (bg rgb(11,18,32), text rgb(230,237,243))",
+    "Print page .print-page remains forced white in dark mode (CSS override in App.css line 186)",
+    "Admin: full WYSIWYG flow — create course TEST_rich_ui with H2 'Titre test', bold 'gras' + normal, bullet list items — saved; public /modules/<mid>/cours/<id> content-body contains <h2>Titre test</h2>, <strong>gras</strong>, <ul><li>×2",
+    "Admin sheets rich editor: identical flow succeeded, public /modules/<mid>/fiches/<id> shows <strong>hello</strong>",
+    "Edit existing course 50fc2003: editor loaded with existing <h2>, <strong>, <ul>, <blockquote>; title edited + saved; re-opened editor still has <h2> — HTML preserved",
+    "Plain-text course ('Ligne 1\\nLigne 2\\n\\nParagraphe 2') renders as 2 <p> with <br> — no visible tags",
+    "XSS content '<p>ok</p><img src=x onerror=alert(1)><script>alert(2)</script>' rendered as <p>ok</p><img src=\"x\"> only (DOMPurify stripped script+onerror); no alert dialog fired",
+    "GET /api/search?q=mortalité returns course 50fc2003 with snippet 'Point clé : réduire la mortalité.' and no '<' chars",
+    "Branding: nav shows 'medbook', document.title='Medbook — Révisions médicales', home mentions Medbook, print header shows 'MEDBOOK · UE 5'",
+    "Regression: admin quizzes-module-filter still has class 'admin-select'"
+  ]
+}

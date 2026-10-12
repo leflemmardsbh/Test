@@ -95,7 +95,7 @@ export default function ModuleDetail() {
                 <div>
                   <strong>{it.title}</strong>
                   {tab === "qcm" && <QuizMeta it={it} />}
-                  {tab !== "qcm" && it.order !== undefined && <small>Ordre #{it.order + 1}</small>}
+                  {tab !== "qcm" && it.order !== undefined && <small>Ordre #{it.order + 1}{it.attachments?.length > 0 && <> · <span className="score-inline pending">{it.attachments.length} PDF</span></>}</small>}
                 </div>
               </div>
               <ChevronRight size={18} color="var(--muted)" />

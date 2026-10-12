@@ -27,4 +27,25 @@ export function errorText(e) {
   return "Une erreur est survenue.";
 }
 
+export function fileUrl(id, download = false) {
+  return `${API}/files/${id}${download ? "?download=1" : ""}`;
+}
+
+export async function uploadPdf(file, onProgress) {
+  const CHUNK = 4 * 1024 * 1024;
+  const uploadId = crypto.randomUUID();
+  const total = Math.max(1, Math.ceil(file.size / CHUNK));
+  for (let i = 0; i < total; i++) {
+    const fd = new FormData();
+    fd.append("upload_id", uploadId);
+    fd.append("index", String(i));
+    fd.append("chunk", file.slice(i * CHUNK, (i + 1) * CHUNK));
+    await client.post("/admin/files/chunk", fd, { headers: authHeaders() });
+    onProgress?.(Math.round(((i + 1) / total) * 95));
+  }
+  const r = await client.post("/admin/files/complete", { upload_id: uploadId, filename: file.name }, { headers: authHeaders() });
+  onProgress?.(100);
+  return r.data;
+}
+
 export default client;

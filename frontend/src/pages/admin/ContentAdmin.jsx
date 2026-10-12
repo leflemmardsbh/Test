@@ -3,8 +3,9 @@ import { Plus, Pencil, Trash2, X } from "lucide-react";
 import api, { authHeaders, errorText } from "@/lib/api";
 import { Notice } from "@/pages/Admin";
 import RichEditor from "@/components/RichEditor";
+import AttachmentsField from "@/components/AttachmentsField";
 
-function BLANK(moduleId) { return { module_id: moduleId || "", title: "", content: "", order: 0 }; }
+function BLANK(moduleId) { return { module_id: moduleId || "", title: "", content: "", attachments: [], order: 0 }; }
 
 export default function ContentAdmin({ modules, kind, label, singularLabel }) {
   const [moduleId, setModuleId] = useState("");
@@ -36,7 +37,7 @@ export default function ContentAdmin({ modules, kind, label, singularLabel }) {
     setEdit(it.id);
     setError(""); setNotice("");
     const r = await api.get(`/${kind}/${it.id}`);
-    setForm({ module_id: moduleId, title: r.data.title, content: r.data.content || "", order: r.data.order ?? 0 });
+    setForm({ module_id: moduleId, title: r.data.title, content: r.data.content || "", attachments: r.data.attachments || [], order: r.data.order ?? 0 });
   }
   function close() { setEdit(null); setError(""); }
 
@@ -93,7 +94,7 @@ export default function ContentAdmin({ modules, kind, label, singularLabel }) {
               <span className="item-row-num">{String(idx + 1).padStart(2, "0")}</span>
               <div className="admin-row-main">
                 <strong>{it.title}</strong>
-                <small>Ordre #{(it.order ?? 0) + 1}</small>
+                <small>Ordre #{(it.order ?? 0) + 1}{it.attachments?.length > 0 && ` · ${it.attachments.length} PDF`}</small>
               </div>
               <div className="admin-row-actions">
                 <button className="icon-btn" onClick={() => openEdit(it)} data-testid={`edit-${kind}-${it.id}`}><Pencil size={14} /></button>
@@ -121,7 +122,12 @@ export default function ContentAdmin({ modules, kind, label, singularLabel }) {
             <div className="form-field">
               <label>Contenu</label>
               <RichEditor value={form.content} onChange={(html) => setForm((f) => ({ ...f, content: html }))} testid={`${kind}-content-editor`} />
-              <span className="hint">Gras, italique, titres, listes et points clés : la mise en forme est conservée à l’affichage.</span>
+              <span className="hint">Gras, italique, titres, listes et points clés : la mise en forme est conservée à l’affichage. Le texte est facultatif si vous joignez un PDF.</span>
+            </div>
+            <div className="form-field">
+              <label>Fichiers PDF</label>
+              <AttachmentsField value={form.attachments} onChange={(fn) => setForm((f) => ({ ...f, attachments: typeof fn === "function" ? fn(f.attachments) : fn }))} testid={`${kind}-attachments`} />
+              <span className="hint">Lecteur intégré côté étudiant, avec téléchargement. Plusieurs PDF possibles.</span>
             </div>
             <div className="form-field">
               <label>Ordre</label>

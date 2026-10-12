@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import api from "@/lib/api";
 import { toSafeHtml } from "@/lib/html";
+import PdfViewer from "@/components/PdfViewer";
 
 export default function ContentView({ kind }) {
   const { id, itemId } = useParams();
@@ -17,6 +18,9 @@ export default function ContentView({ kind }) {
   if (loading) return <main className="container"><p className="muted">Chargement...</p></main>;
   if (!item) return <main className="container"><p className="muted">Contenu introuvable.</p></main>;
 
+  const attachments = item.attachments || [];
+  const hasText = Boolean(item.content && item.content.trim());
+
   return (
     <main className="container" data-testid={`content-view-${kind}`}>
       <Link to={`/modules/${id}`} className="back-link" data-testid="back-to-module">
@@ -25,7 +29,15 @@ export default function ContentView({ kind }) {
       <article className="content-view">
         <p className="eyebrow">{kind === "course" ? "COURS" : "FICHE DE RÉVISION"}</p>
         <h1>{item.title}</h1>
-        <div className="content-body rich-content" data-testid="content-body" dangerouslySetInnerHTML={{ __html: toSafeHtml(item.content) }} />
+        {(hasText || attachments.length === 0) && (
+          <div className="content-body rich-content" data-testid="content-body" dangerouslySetInnerHTML={{ __html: toSafeHtml(item.content) }} />
+        )}
+        {attachments.length > 0 && (
+          <section className="pdf-section" data-testid="pdf-section">
+            {hasText && <p className="eyebrow" style={{ marginTop: 32 }}>DOCUMENTS PDF</p>}
+            {attachments.map((a) => <PdfViewer key={a.id} a={a} />)}
+          </section>
+        )}
       </article>
     </main>
   );
