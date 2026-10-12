@@ -24,17 +24,20 @@
 - Réordonnancement des modules par flèches ↑↓.
 - 15/15 tests backend passés + E2E frontend 100%.
 
-## Backlog
-### P1
-- Export QCM en PDF ou JSON.
-- Score persistant par QCM (localStorage) avec historique.
-- Mode révision : prioriser les questions ratées.
-- Recherche globale cours/fiches/QCM.
+## Implemented (jour 2)
+- `GET /api/search?q=` : recherche insensible à la casse dans modules, cours, fiches, QCM (questions/choix/explications) avec extraits.
+- Barre de recherche dans la nav + page `/recherche` (résultats groupés, surlignage).
+- Score persistant (localStorage `medgl_stats`) : page `/stats` (résumé, meilleur score par QCM, historique, effacer), badges « Meilleur XX% » dans l'onglet QCM du module.
+- Mode Révision (`?mode=revision`) : rejoue uniquement les questions ratées ; bouton « Réviser mes erreurs » sur l'écran résultat et dans Mes stats.
+- Impression / export PDF par QCM : page `/modules/:id/qcm/:itemId/print` (questions puis corrigé en page séparée, bouton window.print).
+- Tests iteration_2 : 6/6 backend + E2E frontend 100%.
 
+## Backlog
 ### P2
 - Drag & drop pour réordonner.
-- Impression/export fiches.
+- Impression/export fiches et cours.
 - Thème sombre.
+- Éditeur riche (ReactQuill) pour les cours.
 - Statistiques admin anonymes (si stockage introduit).
 
 ## Credentials

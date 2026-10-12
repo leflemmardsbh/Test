@@ -1,0 +1,29 @@
+{
+  "summary": "Iteration 2 testing of the 4 new MedGL features: Global search endpoint + page, Mes stats (localStorage), Revision mode (?mode=revision), and QCM Print/PDF page. Backend: 6/6 pytest tests for GET /api/search pass (IEC match on course+quiz with snippet, case-insensitive, 1-char empty, no-results empty, accented 'bêtabloquant' matches sheet AND course, no _id leak). Frontend Playwright E2E: (a) QCM play (1 wrong, 2 right) -> 67% result, 'Réviser mes erreurs (1)' + Mes stats link + Imprimer/PDF link all visible with correct data-testids; (b) Revise mode shows single question 'Quel traitement est indiqué dans l'insuffisance cardiaque ?', scoring 100% removes revise button and 'QCM complet' restart returns to full 3-question quiz; (c) ?mode=revision with no pending errors shows quiz-empty + quiz-play-normal that relaunches full quiz; (d) /stats shows stats-total-attempts=1, average=67%, pending=1, per-quiz row with module title 'Ue 5' (not fallback), stats-revise + stats-replay buttons, history with '· révision' marker after revision run, pending drops to 0, localStorage persistence after reload, stats-clear-button -> stats-empty; (e) Module detail tab-qcm displays quiz-meta with 'Meilleur 100%'; (f) Print page renders print-quiz-title='QCM Cardiologie 1', 3 .print-q items with A/B/C/D letters, print-answers with 'Réponse A', 'Réponse B', 'Réponse B' and explanations, print-trigger-button stubbed window.print called OK, no nav bar on print page, print-back-link returns to quiz; (g) Nav search 'IEC' Enter -> /recherche?q=IEC, search-count '2 résultats', search-group-courses + search-group-quizzes, <mark>IEC</mark> rendered, clicking search-result-course opens the course; (h) /recherche page: 'bêtabloquant' -> search-group-sheets, 'zzzzzz' -> search-empty, 'a' (1 char) -> search-hint; (i) Regression: home, /modules list (1 module Ue 5), admin login with MEDGL-2026 all working. Seed data (module eeef84b2…, course 'Insuffisance cardiaque', fiche 'Fiche : Bêtabloquants', QCM 'QCM Cardiologie 1' af43150c…) preserved. localStorage left clean.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_search.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/iter2_search.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Minor: Backend /api/search uses `re.escape(q)` with case-insensitive regex — safe from ReDoS and handles accented chars correctly because MongoDB's $regex 'i' flag already works on Unicode. Good.",
+    "Minor: Snippet() centers on the first match using fixed width/3 window — works but could be improved to highlight across multiple matches. Acceptable for current scope.",
+    "Minor: /app/frontend/src/pages/Stats.jsx `modTitle` falls back to 'Module' if modules fetch has not completed yet; could cause a flash of 'Module' on first render before /api/modules resolves. Not observed in tests (fast network) but is a known minor race. Consider showing module_title stored in the attempt itself as fallback.",
+    "Minor: /app/frontend/src/lib/stats.js stores per-attempt data; no cap on attempts.length — long-term local history could grow unbounded. Consider capping to ~500.",
+    "Observation: QuizPrint.jsx renders fine without any Layout nav wrapper because the route is likely registered outside the Layout <Outlet /> — confirmed by test (nav-home absent). Good UX choice for printing.",
+    "Observation: Revision mode recomputes `questions` via `getWrongQuestions(itemId)` inside useMemo keyed on runKey; the eslint-disable for exhaustive-deps is used intentionally. Safe here but add a brief comment to future-proof."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_search.py"
+  ],
+  "success_rate": {"backend": "100% (6/6 new + 15/15 regression from iter1)", "frontend": "100% (quiz play+revision, stats, print, search, regression all passing)"},
+  "test_credentials": "Admin code MEDGL-2026 — verified via /admin-login flow in Playwright run.",
+  "seed_data_creation": "No new seed data created. Existing seed (module 'Ue 5', course 'Insuffisance cardiaque', fiche 'Fiche : Bêtabloquants', QCM 'QCM Cardiologie 1') untouched. localStorage key medgl_stats cleared at end of browser session.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend search tests at /app/backend/tests/test_search.py (6 tests, <1s). All new features working end-to-end. QuizPlay.jsx finish() correctly updates localStorage via recordAttempt which prunes a wrong question when the same question text appears in correctTexts on a later run — this is how revision mode cleans the wrong list. Print page is at /modules/:id/qcm/:itemId/print and uses no Layout wrapper (no nav bar). Highlight in Search.jsx wraps the exact-case match of q in <mark>. The nav search submits only when q.trim().length >= 2.",
+  "rca of the issue": "No issues found."
+}
