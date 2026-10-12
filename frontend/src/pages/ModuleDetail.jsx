@@ -98,7 +98,7 @@ export default function ModuleDetail() {
                   {tab !== "qcm" && it.order !== undefined && <small>Ordre #{it.order + 1}</small>}
                 </div>
               </div>
-              <ChevronRight size={18} color="#64748B" />
+              <ChevronRight size={18} color="var(--muted)" />
             </div>
           ))}
         </div>

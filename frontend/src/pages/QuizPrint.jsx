@@ -28,7 +28,7 @@ export default function QuizPrint() {
       </div>
 
       <header className="print-head">
-        <p className="eyebrow">MEDGL · {module?.title?.toUpperCase() || "QCM"}</p>
+        <p className="eyebrow">MEDBOOK · {module?.title?.toUpperCase() || "QCM"}</p>
         <h1 data-testid="print-quiz-title">{quiz.title}</h1>
         {quiz.description && <p className="muted">{quiz.description}</p>}
         <div className="print-meta">

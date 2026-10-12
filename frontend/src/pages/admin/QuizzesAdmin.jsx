@@ -111,7 +111,7 @@ export default function QuizzesAdmin({ modules }) {
       <div className="admin-panel-head">
         <h2>QCM par module</h2>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <select value={moduleId} onChange={(e) => setModuleId(e.target.value)} style={{ padding: "9px 12px", border: "1px solid var(--line)", borderRadius: 10, fontSize: 14, background: "#fff" }} data-testid="quizzes-module-filter">
+          <select value={moduleId} onChange={(e) => setModuleId(e.target.value)} className="admin-select" data-testid="quizzes-module-filter">
             {modules.map((m) => <option key={m.id} value={m.id}>{m.title}</option>)}
           </select>
           <button className="btn btn-primary" onClick={openNew} data-testid="admin-new-quiz">

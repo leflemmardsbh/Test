@@ -166,6 +166,9 @@ async def quiz_detail(quiz_id: str):
 def snippet(text: str, q: str, width: int = 140) -> str:
     if not text:
         return ""
+    import re
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
     low = text.lower()
     pos = low.find(q.lower())
     if pos < 0:

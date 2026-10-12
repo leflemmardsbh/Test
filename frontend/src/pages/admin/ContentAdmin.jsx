@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 import api, { authHeaders, errorText } from "@/lib/api";
 import { Notice } from "@/pages/Admin";
+import RichEditor from "@/components/RichEditor";
 
 function BLANK(moduleId) { return { module_id: moduleId || "", title: "", content: "", order: 0 }; }
 
@@ -72,7 +73,7 @@ export default function ContentAdmin({ modules, kind, label, singularLabel }) {
       <div className="admin-panel-head">
         <h2>{label}</h2>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <select value={moduleId} onChange={(e) => setModuleId(e.target.value)} style={{ padding: "9px 12px", border: "1px solid var(--line)", borderRadius: 10, fontSize: 14, background: "#fff" }} data-testid={`${kind}-module-filter`}>
+          <select value={moduleId} onChange={(e) => setModuleId(e.target.value)} className="admin-select" data-testid={`${kind}-module-filter`}>
             {modules.map((m) => <option key={m.id} value={m.id}>{m.title}</option>)}
           </select>
           <button className="btn btn-primary" onClick={openNew} data-testid={`admin-new-${kind}`}>
@@ -119,8 +120,8 @@ export default function ContentAdmin({ modules, kind, label, singularLabel }) {
             </div>
             <div className="form-field">
               <label>Contenu</label>
-              <textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} data-testid={`${kind}-content-input`} placeholder="Rédigez le contenu ici..." style={{ minHeight: 220 }} />
-              <span className="hint">Les sauts de ligne sont préservés à l’affichage.</span>
+              <RichEditor value={form.content} onChange={(html) => setForm((f) => ({ ...f, content: html }))} testid={`${kind}-content-editor`} />
+              <span className="hint">Gras, italique, titres, listes et points clés : la mise en forme est conservée à l’affichage.</span>
             </div>
             <div className="form-field">
               <label>Ordre</label>

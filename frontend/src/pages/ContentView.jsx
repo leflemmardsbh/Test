@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import api from "@/lib/api";
+import { toSafeHtml } from "@/lib/html";
 
 export default function ContentView({ kind }) {
   const { id, itemId } = useParams();
@@ -24,7 +25,7 @@ export default function ContentView({ kind }) {
       <article className="content-view">
         <p className="eyebrow">{kind === "course" ? "COURS" : "FICHE DE RÉVISION"}</p>
         <h1>{item.title}</h1>
-        <div className="content-body" data-testid="content-body">{item.content}</div>
+        <div className="content-body rich-content" data-testid="content-body" dangerouslySetInnerHTML={{ __html: toSafeHtml(item.content) }} />
       </article>
     </main>
   );

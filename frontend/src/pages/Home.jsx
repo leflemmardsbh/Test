@@ -18,7 +18,7 @@ export default function Home() {
         <div>
           <p className="eyebrow">PLATEFORME DE RÉVISION MÉDICALE</p>
           <h1>Vos révisions médicales,<br /><em>structurées comme en vol.</em></h1>
-          <p>Inspiré d’Aérogligli pour le PPL, MedGL rassemble vos cours, fiches et QCM par spécialité. Simple, sobre, et prêt à être adapté à votre programme.</p>
+          <p>Inspiré d’Aérogligli pour le PPL, Medbook rassemble vos cours, fiches et QCM par spécialité. Simple, sobre, et prêt à être adapté à votre programme.</p>
           <Link to="/modules" className="btn btn-primary" data-testid="hero-explore-button">
             Explorer les modules <ArrowRight size={16} />
           </Link>

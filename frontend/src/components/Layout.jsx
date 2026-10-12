@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { NavLink, Outlet, Link, useNavigate, useLocation } from "react-router-dom";
-import { Stethoscope, Shield, Search, BarChart3 } from "lucide-react";
+import { Stethoscope, Shield, Search, BarChart3, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/lib/theme";
 import "@/App.css";
 
 export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [q, setQ] = useState("");
+  const { theme, toggle } = useTheme();
 
   useEffect(() => {
     if (!location.pathname.startsWith("/recherche")) setQ("");
@@ -24,7 +26,7 @@ export default function Layout() {
         <div className="nav-inner">
           <Link to="/" className="brand" data-testid="brand-home-link">
             <span className="brand-mark"><Stethoscope size={20} /></span>
-            <b>med<span>gl</span></b>
+            <b>med<span>book</span></b>
           </Link>
           <div className="nav-links">
             <NavLink to="/" end data-testid="nav-home">Accueil</NavLink>
@@ -40,9 +42,14 @@ export default function Layout() {
               onChange={(e) => setQ(e.target.value)}
             />
           </form>
-          <Link to="/admin" className="admin-pill" data-testid="nav-admin">
-            <Shield size={14} /> Admin
-          </Link>
+          <div className="nav-right">
+            <button type="button" className="theme-toggle" onClick={toggle} data-testid="theme-toggle" aria-label={theme === "dark" ? "Passer en mode clair" : "Passer en mode sombre"} title={theme === "dark" ? "Mode clair" : "Mode sombre"}>
+              {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+            <Link to="/admin" className="admin-pill" data-testid="nav-admin">
+              <Shield size={14} /> Admin
+            </Link>
+          </div>
         </div>
       </nav>
       <Outlet />

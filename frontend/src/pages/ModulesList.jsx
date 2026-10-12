@@ -28,13 +28,13 @@ export default function ModulesList() {
       </div>
 
       <div style={{ position: "relative", maxWidth: 420, marginBottom: 28 }}>
-        <Search size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#64748B" }} />
+        <Search size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--muted)" }} />
         <input
           data-testid="modules-search-input"
           placeholder="Rechercher un module..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          style={{ width: "100%", padding: "11px 14px 11px 40px", border: "1px solid var(--line)", borderRadius: 10, fontSize: 14, background: "#fff" }}
+          style={{ width: "100%", padding: "11px 14px 11px 40px", border: "1px solid var(--line)", borderRadius: 10, fontSize: 14, background: "var(--surface)", color: "var(--ink)" }}
         />
       </div>
 

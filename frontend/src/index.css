@@ -19,8 +19,33 @@
   --danger-soft: #FEE4E2;
   --amber: #B45309;
   --amber-soft: #FEF3C7;
+  --accent-ink: #0F5131;
+  --mark: #FDE68A;
   --radius: 14px;
+  color-scheme: light;
 }
+
+:root[data-theme="dark"] {
+  --ink: #E6EDF3;
+  --muted: #94A3B8;
+  --line: #243041;
+  --bg: #0B1220;
+  --surface: #121B2B;
+  --primary: #5FB3D1;
+  --primary-hover: #7CC4DD;
+  --primary-soft: #14303E;
+  --accent: #4ADE80;
+  --accent-soft: #11301F;
+  --danger: #F87171;
+  --danger-soft: #3B1515;
+  --amber: #FBBF24;
+  --amber-soft: #3A2A0A;
+  --accent-ink: #BBF7D0;
+  --mark: #7A5A00;
+  color-scheme: dark;
+}
+
+html { transition: background-color .25s, color .25s; }
 
 html, body, #root { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink); }
 * { box-sizing: border-box; }
