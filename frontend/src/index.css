@@ -1,5 +1,31 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-html,body,#root{margin:0;min-height:100%;}
-*{box-sizing:border-box}
+
+:root {
+  --ink: #0F172A;
+  --muted: #64748B;
+  --line: #E2E8F0;
+  --bg: #F6F8FB;
+  --surface: #FFFFFF;
+  --primary: #0D5C75;
+  --primary-hover: #09465A;
+  --primary-soft: #E8F1F5;
+  --accent: #2EA44F;
+  --accent-soft: #E6F4EA;
+  --danger: #B42318;
+  --danger-soft: #FEE4E2;
+  --amber: #B45309;
+  --amber-soft: #FEF3C7;
+  --radius: 14px;
+}
+
+html, body, #root { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink); }
+* { box-sizing: border-box; }
+body { font-family: "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+h1,h2,h3,h4 { font-family: "Plus Jakarta Sans", sans-serif; color: var(--ink); letter-spacing: -0.01em; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+::selection { background: var(--primary-soft); color: var(--primary); }
